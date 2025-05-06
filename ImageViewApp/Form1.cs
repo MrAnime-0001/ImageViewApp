@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -68,6 +69,7 @@ namespace ImageViewApp
         public MainForm()
         {
             InitializeComponent();
+            SetHighPerformanceMode();
             btnPickFolder.Enabled = false;
             btnYes.Enabled = false;
             btnNo.Enabled = false;
@@ -93,6 +95,19 @@ namespace ImageViewApp
 
             // Add this code in the MainForm constructor or in the designer
             btnClearSaveData.Click += btnClearSaveData_Click;
+        }
+
+        private void SetHighPerformanceMode()
+        {
+            try
+            {
+                Process currentProcess = Process.GetCurrentProcess();
+                currentProcess.PriorityClass = ProcessPriorityClass.High; // Options: Idle, BelowNormal, Normal, AboveNormal, High, RealTime
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error setting high-performance mode: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnPickDeliveryLocationYes_Click(object sender, EventArgs e)
@@ -473,6 +488,32 @@ namespace ImageViewApp
                 btnPickFolder.Enabled = false;
             }
         }
+
+        private async Task LoadImagesAsync()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(imageFolderPath))
+                {
+                    imageFiles = await Task.Run(() => Directory.GetFiles(imageFolderPath)
+                                                              .Where(IsImageFile)
+                                                              .OrderBy(f => f)
+                                                              .ToArray());
+                    currentImageIndex = 0;
+                    DisplayCurrentImage();
+                    MessageBox.Show("Images loaded successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                MessageBox.Show("Access to the folder is denied. " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while loading images. " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
 
         private void btnSkip_Click(object sender, EventArgs e)
         {
