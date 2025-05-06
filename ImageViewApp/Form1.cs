@@ -76,8 +76,10 @@ namespace ImageViewApp
             btnSaveAs.Enabled = false;
             btnSearch.Enabled = false;
             btnSearchv2.Enabled = false;
-            btnResetSearch.Enabled = false;
             btnSkip.Enabled = false;
+            btnSkipSimilar.Enabled = false;
+            btnResetSearch.Enabled = false;
+            btnHidePictureBox.Enabled = false;
             btnrestartAnimatedImage.Enabled = false;
 
             // Add these lines to disable key input initially
@@ -155,8 +157,10 @@ namespace ImageViewApp
                 btnSaveAs.Enabled = true;
                 btnSearch.Enabled = true;
                 btnSearchv2.Enabled = true;
-                btnResetSearch.Enabled = true;
                 btnSkip.Enabled = true;
+                btnSkipSimilar.Enabled = true;
+                btnResetSearch.Enabled = true;
+                btnHidePictureBox.Enabled = true;
                 btnrestartAnimatedImage.Enabled = true;
             }
         }
@@ -224,8 +228,10 @@ namespace ImageViewApp
             btnSaveAs.Enabled = false;
             btnSearch.Enabled = false;
             btnSearchv2.Enabled = false;
-            btnResetSearch.Enabled = false;
             btnSkip.Enabled = false;
+            btnSkipSimilar.Enabled = false;
+            btnResetSearch.Enabled = false;
+            btnHidePictureBox.Enabled = false;
             btnrestartAnimatedImage.Enabled = false;
 
             // Deselect the button
@@ -300,8 +306,10 @@ namespace ImageViewApp
                 btnNo.Enabled = true;
                 btnSearch.Enabled = true;
                 btnSearchv2.Enabled = true;
-                btnResetSearch.Enabled = true;
                 btnSkip.Enabled = true;
+                btnSkipSimilar.Enabled = true;
+                btnResetSearch.Enabled = true;
+                btnHidePictureBox.Enabled = true;
                 btnrestartAnimatedImage.Enabled = true;
 
                 // Load the images
@@ -379,8 +387,10 @@ namespace ImageViewApp
                 btnNo.Enabled = true;
                 btnSearch.Enabled = true;
                 btnSearchv2.Enabled = true;
-                btnResetSearch.Enabled = true;
                 btnSkip.Enabled = true;
+                btnSkipSimilar.Enabled = true;
+                btnResetSearch.Enabled = true;
+                btnHidePictureBox.Enabled = true;
                 btnrestartAnimatedImage.Enabled = true;
 
                 // Load the images
@@ -620,6 +630,68 @@ namespace ImageViewApp
         private void btnrestartAnimatedImage_Click(object sender, EventArgs e)
         {
             pictureBox.ImageLocation = imageFiles[currentImageIndex];
+        }
+
+        private void btnHidePictureBox_Click(object sender, EventArgs e)
+        {
+            // Toggle visibility of pictureBox
+            pictureBox.Visible = !pictureBox.Visible;
+
+            // Enable/Disable buttons based on pictureBox visibility
+            bool isVisible = pictureBox.Visible;
+            btnPickFolder.Enabled = isVisible;
+            btnYes.Enabled = isVisible;
+            btnNo.Enabled = isVisible;
+            btnReset.Enabled = isVisible;
+            btnSave.Enabled = isVisible;
+            btnLoad.Enabled = isVisible;
+            btnClearSaveData.Enabled = isVisible;
+            btnSaveAs.Enabled = isVisible;
+            btnLoadAs.Enabled = isVisible;
+            btnSearch.Enabled = isVisible;
+            btnSearchv2.Enabled = isVisible;
+            btnSkip.Enabled = isVisible;
+            btnSkipSimilar.Enabled = isVisible;
+            btnResetSearch.Enabled = isVisible;
+            btnrestartAnimatedImage.Enabled = isVisible;
+
+            // Change button text based on visibility
+            btnHidePictureBox.Text = isVisible ? "Hide Image" : "Show Image";
+        }
+
+        private void btnSkipSimilar_Click(object sender, EventArgs e)
+        {
+            if (imageFiles.Length > 0)
+            {
+                // Extract the first word from the current image filename
+                string firstWord = GetFirstWord(Path.GetFileNameWithoutExtension(imageFiles[currentImageIndex]));
+
+                // Move to the next image that has a different first word
+                do
+                {
+                    currentImageIndex++;
+                    if (currentImageIndex >= imageFiles.Length)
+                    {
+                        currentImageIndex = 0; // Wrap around if reaching the end
+                    }
+                }
+                while (GetFirstWord(Path.GetFileNameWithoutExtension(imageFiles[currentImageIndex])) == firstWord);
+
+                DisplayCurrentImage();
+            }
+
+            // Deselect the button
+            this.ActiveControl = null;
+        }
+
+        // Helper function to extract the first word from a filename
+        private string GetFirstWord(string filename)
+        {
+            if (string.IsNullOrWhiteSpace(filename))
+                return string.Empty;
+
+            string[] words = filename.Split(new[] { ' ', '_', '-' }, StringSplitOptions.RemoveEmptyEntries);
+            return words.Length > 0 ? words[0] : filename; // Return first word or filename if no spaces
         }
     }
 }

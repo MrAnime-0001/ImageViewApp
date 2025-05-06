@@ -45,13 +45,15 @@
             btnClearSaveData = new ToolStripMenuItem();
             btnSaveAs = new ToolStripMenuItem();
             btnLoadAs = new ToolStripMenuItem();
+            btnSkip = new ToolStripMenuItem();
+            btnSkipSimilar = new ToolStripMenuItem();
+            btnResetSearch = new ToolStripMenuItem();
+            btnHidePictureBox = new ToolStripMenuItem();
             ExtraToolStripMenuItem = new ToolStripMenuItem();
             btnSearch = new ToolStripMenuItem();
             btnSearchv2 = new ToolStripMenuItem();
-            btnResetSearch = new ToolStripMenuItem();
-            btnSkip = new ToolStripMenuItem();
-            btnToggleKeyInput = new Button();
             btnrestartAnimatedImage = new ToolStripMenuItem();
+            btnToggleKeyInput = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox).BeginInit();
             menuStrip.SuspendLayout();
             SuspendLayout();
@@ -158,7 +160,7 @@
             // 
             // menuStrip
             // 
-            menuStrip.Items.AddRange(new ToolStripItem[] { saveLoadToolStripMenuItem, ExtraToolStripMenuItem });
+            menuStrip.Items.AddRange(new ToolStripItem[] { saveLoadToolStripMenuItem, btnSkip, btnSkipSimilar, btnResetSearch, btnHidePictureBox, ExtraToolStripMenuItem });
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";
             menuStrip.Size = new Size(1416, 24);
@@ -207,11 +209,39 @@
             btnLoadAs.Text = "Load as";
             btnLoadAs.Click += btnLoadAs_Click;
             // 
+            // btnSkip
+            // 
+            btnSkip.Name = "btnSkip";
+            btnSkip.Size = new Size(41, 20);
+            btnSkip.Text = "Skip";
+            btnSkip.Click += btnSkip_Click;
+            // 
+            // btnSkipSimilar
+            // 
+            btnSkipSimilar.Name = "btnSkipSimilar";
+            btnSkipSimilar.Size = new Size(80, 20);
+            btnSkipSimilar.Text = "Skip Similar";
+            btnSkipSimilar.Click += btnSkipSimilar_Click;
+            // 
+            // btnResetSearch
+            // 
+            btnResetSearch.Name = "btnResetSearch";
+            btnResetSearch.Size = new Size(85, 20);
+            btnResetSearch.Text = "Reset Search";
+            btnResetSearch.Click += btnResetSearch_Click;
+            // 
+            // btnHidePictureBox
+            // 
+            btnHidePictureBox.Name = "btnHidePictureBox";
+            btnHidePictureBox.Size = new Size(106, 20);
+            btnHidePictureBox.Text = "Hide Picture Box";
+            btnHidePictureBox.Click += btnHidePictureBox_Click;
+            // 
             // ExtraToolStripMenuItem
             // 
-            ExtraToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { btnSearch, btnSearchv2, btnrestartAnimatedImage, btnResetSearch, btnSkip });
+            ExtraToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { btnSearch, btnSearchv2, btnrestartAnimatedImage });
             ExtraToolStripMenuItem.Name = "ExtraToolStripMenuItem";
-            ExtraToolStripMenuItem.Size = new Size(45, 20);
+            ExtraToolStripMenuItem.Size = new Size(44, 20);
             ExtraToolStripMenuItem.Text = "Extra";
             // 
             // btnSearch
@@ -228,19 +258,12 @@
             btnSearchv2.Text = "File Explorer Search";
             btnSearchv2.Click += btnSearchv2_Click;
             // 
-            // btnResetSearch
+            // btnrestartAnimatedImage
             // 
-            btnResetSearch.Name = "btnResetSearch";
-            btnResetSearch.Size = new Size(201, 22);
-            btnResetSearch.Text = "Reset Search";
-            btnResetSearch.Click += btnResetSearch_Click;
-            // 
-            // btnSkip
-            // 
-            btnSkip.Name = "btnSkip";
-            btnSkip.Size = new Size(201, 22);
-            btnSkip.Text = "Skip";
-            btnSkip.Click += btnSkip_Click;
+            btnrestartAnimatedImage.Name = "btnrestartAnimatedImage";
+            btnrestartAnimatedImage.Size = new Size(201, 22);
+            btnrestartAnimatedImage.Text = "Restart Animated Image";
+            btnrestartAnimatedImage.Click += btnrestartAnimatedImage_Click;
             // 
             // btnToggleKeyInput
             // 
@@ -251,13 +274,6 @@
             btnToggleKeyInput.Text = "Toggle Hot Keys";
             btnToggleKeyInput.UseVisualStyleBackColor = true;
             btnToggleKeyInput.Click += btnToggleKeyInput_Click;
-            // 
-            // btnrestartAnimatedImage
-            // 
-            btnrestartAnimatedImage.Name = "btnrestartAnimatedImage";
-            btnrestartAnimatedImage.Size = new Size(201, 22);
-            btnrestartAnimatedImage.Text = "Restart Animated Image";
-            btnrestartAnimatedImage.Click += btnrestartAnimatedImage_Click;
             // 
             // MainForm
             // 
@@ -311,10 +327,12 @@
         private ToolStripMenuItem btnClearSaveData;
         private ToolStripMenuItem ExtraToolStripMenuItem;
         private ToolStripMenuItem btnSearch;
-        private ToolStripMenuItem btnResetSearch;
-        private ToolStripMenuItem btnSkip;
         private Button btnToggleKeyInput;
         private ToolStripMenuItem btnSearchv2;
         private ToolStripMenuItem btnrestartAnimatedImage;
+        private ToolStripMenuItem btnSkipSimilar;
+        private ToolStripMenuItem btnSkip;
+        private ToolStripMenuItem btnResetSearch;
+        private ToolStripMenuItem btnHidePictureBox;
     }
 }
