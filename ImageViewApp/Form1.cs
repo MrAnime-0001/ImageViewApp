@@ -12,7 +12,7 @@ namespace ImageViewApp
         private string deliveryLocationNo;
         private string[] imageFiles;
         private int currentImageIndex;
-        private string savedFilePath; // Added field to store the saved file path
+        private string savedFilePath;
         private bool keyInputEnabled = false;
 
         private void EnableKeyInput()
@@ -142,6 +142,9 @@ namespace ImageViewApp
             }
         }
 
+        const string PASSED_MESSAGE = "**Passed**\nFile has passed and been sent to: {0}";
+        const string FAILED_MESSAGE = "**Failed**\nFile has failed and been sent to: {0}";
+
         private void btnYes_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(deliveryLocationYes))
@@ -149,7 +152,10 @@ namespace ImageViewApp
                 try
                 {
                     MoveCurrentImage(deliveryLocationYes);
-                    MessageBox.Show("File has passed and been sent to: " + deliveryLocationYes, "File Sent", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Display the pass message with bold text
+                    string passMessage = string.Format(PASSED_MESSAGE, deliveryLocationYes);
+                    MessageBox.Show(passMessage, "File Sent", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
@@ -167,7 +173,10 @@ namespace ImageViewApp
                 try
                 {
                     MoveCurrentImage(deliveryLocationNo);
-                    MessageBox.Show("File has failed and been sent to: " + deliveryLocationNo, "File Sent", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    // Display the fail message with bold text
+                    string failMessage = string.Format(FAILED_MESSAGE, deliveryLocationNo);
+                    MessageBox.Show(failMessage, "File Sent", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
@@ -513,6 +522,47 @@ namespace ImageViewApp
             if (!string.IsNullOrEmpty(deliveryLocationYes) && !string.IsNullOrEmpty(deliveryLocationNo))
             {
                 btnPickFolder.Enabled = true;
+            }
+        }
+
+        private void btnSearchv2_Click(object sender, EventArgs e)
+        {
+            // Create an OpenFileDialog instance
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                // Set the initial directory to the imageFolderPath
+                openFileDialog.InitialDirectory = imageFolderPath;
+
+                // Filter the files to only show image files
+                openFileDialog.Filter = "Image Files (*.jpg, *.jpeg, *.png, *.gif, *.bmp)|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
+
+                // Show the OpenFileDialog and get the result
+                DialogResult result = openFileDialog.ShowDialog();
+
+                // If the user selected an image file
+                if (result == DialogResult.OK)
+                {
+                    // Get the selected image file path
+                    string selectedImagePath = openFileDialog.FileName;
+
+                    // Find the index of the selected image in the imageFiles array
+                    int selectedImageIndex = Array.FindIndex(imageFiles, image => image.Equals(selectedImagePath, StringComparison.OrdinalIgnoreCase));
+
+                    // If the selected image was found in the imageFiles array
+                    if (selectedImageIndex != -1)
+                    {
+                        // Set the current image index to the index of the selected image
+                        currentImageIndex = selectedImageIndex;
+
+                        // Update the UI to display the selected image
+                        DisplayCurrentImage();
+                    }
+                    else
+                    {
+                        // Show a message box indicating that the selected image was not found in the imageFiles array
+                        MessageBox.Show("The selected image was not found in the image folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
             }
         }
     }
