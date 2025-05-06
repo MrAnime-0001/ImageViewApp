@@ -73,8 +73,10 @@ namespace ImageViewApp
             btnNo.Enabled = false;
             btnSaveAs.Enabled = false;
             btnSearch.Enabled = false;
+            btnSearchv2.Enabled = false;
             btnResetSearch.Enabled = false;
             btnSkip.Enabled = false;
+            btnrestartAnimatedImage.Enabled = false;
 
             // Add these lines to disable key input initially
             DisableKeyInput();
@@ -137,8 +139,10 @@ namespace ImageViewApp
                 btnPickFolder.Enabled = false;
                 btnSaveAs.Enabled = true;
                 btnSearch.Enabled = true;
+                btnSearchv2.Enabled = true;
                 btnResetSearch.Enabled = true;
                 btnSkip.Enabled = true;
+                btnrestartAnimatedImage.Enabled = true;
             }
         }
 
@@ -204,8 +208,10 @@ namespace ImageViewApp
             btnNo.Enabled = false;
             btnSaveAs.Enabled = false;
             btnSearch.Enabled = false;
+            btnSearchv2.Enabled = false;
             btnResetSearch.Enabled = false;
             btnSkip.Enabled = false;
+            btnrestartAnimatedImage.Enabled = false;
 
             // Deselect the button
             this.ActiveControl = null;
@@ -278,8 +284,10 @@ namespace ImageViewApp
                 btnYes.Enabled = true;
                 btnNo.Enabled = true;
                 btnSearch.Enabled = true;
+                btnSearchv2.Enabled = true;
                 btnResetSearch.Enabled = true;
                 btnSkip.Enabled = true;
+                btnrestartAnimatedImage.Enabled = true;
 
                 // Load the images
                 LoadImages();
@@ -355,8 +363,10 @@ namespace ImageViewApp
                 btnYes.Enabled = true;
                 btnNo.Enabled = true;
                 btnSearch.Enabled = true;
+                btnSearchv2.Enabled = true;
                 btnResetSearch.Enabled = true;
                 btnSkip.Enabled = true;
+                btnrestartAnimatedImage.Enabled = true;
 
                 // Load the images
                 LoadImages();
@@ -564,6 +574,11 @@ namespace ImageViewApp
                     }
                 }
             }
+        }
+
+        private void btnrestartAnimatedImage_Click(object sender, EventArgs e)
+        {
+            pictureBox.ImageLocation = imageFiles[currentImageIndex];
         }
     }
 }

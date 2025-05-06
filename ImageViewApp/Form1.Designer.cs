@@ -47,10 +47,11 @@
             btnLoadAs = new ToolStripMenuItem();
             ExtraToolStripMenuItem = new ToolStripMenuItem();
             btnSearch = new ToolStripMenuItem();
+            btnSearchv2 = new ToolStripMenuItem();
             btnResetSearch = new ToolStripMenuItem();
             btnSkip = new ToolStripMenuItem();
             btnToggleKeyInput = new Button();
-            btnSearchv2 = new ToolStripMenuItem();
+            btnrestartAnimatedImage = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)pictureBox).BeginInit();
             menuStrip.SuspendLayout();
             SuspendLayout();
@@ -208,7 +209,7 @@
             // 
             // ExtraToolStripMenuItem
             // 
-            ExtraToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { btnSearch, btnSearchv2, btnResetSearch, btnSkip });
+            ExtraToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { btnSearch, btnSearchv2, btnrestartAnimatedImage, btnResetSearch, btnSkip });
             ExtraToolStripMenuItem.Name = "ExtraToolStripMenuItem";
             ExtraToolStripMenuItem.Size = new Size(45, 20);
             ExtraToolStripMenuItem.Text = "Extra";
@@ -216,21 +217,28 @@
             // btnSearch
             // 
             btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(180, 22);
+            btnSearch.Size = new Size(201, 22);
             btnSearch.Text = "Search";
             btnSearch.Click += btnSearch_Click;
+            // 
+            // btnSearchv2
+            // 
+            btnSearchv2.Name = "btnSearchv2";
+            btnSearchv2.Size = new Size(201, 22);
+            btnSearchv2.Text = "File Explorer Search";
+            btnSearchv2.Click += btnSearchv2_Click;
             // 
             // btnResetSearch
             // 
             btnResetSearch.Name = "btnResetSearch";
-            btnResetSearch.Size = new Size(180, 22);
+            btnResetSearch.Size = new Size(201, 22);
             btnResetSearch.Text = "Reset Search";
             btnResetSearch.Click += btnResetSearch_Click;
             // 
             // btnSkip
             // 
             btnSkip.Name = "btnSkip";
-            btnSkip.Size = new Size(180, 22);
+            btnSkip.Size = new Size(201, 22);
             btnSkip.Text = "Skip";
             btnSkip.Click += btnSkip_Click;
             // 
@@ -244,12 +252,12 @@
             btnToggleKeyInput.UseVisualStyleBackColor = true;
             btnToggleKeyInput.Click += btnToggleKeyInput_Click;
             // 
-            // btnSearchv2
+            // btnrestartAnimatedImage
             // 
-            btnSearchv2.Name = "btnSearchv2";
-            btnSearchv2.Size = new Size(180, 22);
-            btnSearchv2.Text = "File Explorer Search";
-            btnSearchv2.Click += btnSearchv2_Click;
+            btnrestartAnimatedImage.Name = "btnrestartAnimatedImage";
+            btnrestartAnimatedImage.Size = new Size(201, 22);
+            btnrestartAnimatedImage.Text = "Restart Animated Image";
+            btnrestartAnimatedImage.Click += btnrestartAnimatedImage_Click;
             // 
             // MainForm
             // 
@@ -307,5 +315,6 @@
         private ToolStripMenuItem btnSkip;
         private Button btnToggleKeyInput;
         private ToolStripMenuItem btnSearchv2;
+        private ToolStripMenuItem btnrestartAnimatedImage;
     }
 }
