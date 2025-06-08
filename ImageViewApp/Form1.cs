@@ -132,6 +132,18 @@ namespace ImageViewApp
             }
         }
 
+        const string PASSED_MESSAGE = "✅ Image successfully passed!\nSent to: {0}";
+        const string FAILED_MESSAGE = "❌ Image marked as failed.\nSent to: {0}";
+
+        private async Task DelayAndReenableAsync()
+        {
+            btnYes.Enabled = false;
+            btnNo.Enabled = false;
+            await Task.Delay(1500);
+            btnYes.Enabled = true;
+            btnNo.Enabled = true;
+        }
+
         public MainForm()
         {
             InitializeComponent();
@@ -218,14 +230,10 @@ namespace ImageViewApp
             }
         }
 
-        const string PASSED_MESSAGE = "✅ Image successfully passed!\nSent to: {0}";
-        const string FAILED_MESSAGE = "❌ Image marked as failed.\nSent to: {0}";
-
         private async void btnYes_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(deliveryLocationYes))
             {
-                btnYes.Enabled = false;
                 try
                 {
                     MoveCurrentImage(deliveryLocationYes);
@@ -237,8 +245,7 @@ namespace ImageViewApp
                     ShowToast("⚠️ Failed to move image: " + ex.Message, 3000, true);
                 }
 
-                await Task.Delay(1500);
-                btnYes.Enabled = true;
+                await DelayAndReenableAsync();
             }
 
             this.ActiveControl = null;
@@ -248,7 +255,6 @@ namespace ImageViewApp
         {
             if (!string.IsNullOrEmpty(deliveryLocationNo))
             {
-                btnNo.Enabled = false;
                 try
                 {
                     MoveCurrentImage(deliveryLocationNo);
@@ -260,8 +266,7 @@ namespace ImageViewApp
                     ShowToast("⚠️ Failed to move image: " + ex.Message, 3000, true);
                 }
 
-                await Task.Delay(1500);
-                btnNo.Enabled = true;
+                await DelayAndReenableAsync();
             }
 
             this.ActiveControl = null;
