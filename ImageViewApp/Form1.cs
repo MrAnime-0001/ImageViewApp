@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -48,6 +48,12 @@ namespace ImageViewApp
                         return true;
                     case Keys.NumPad4:
                         btnSkipSimilar.PerformClick();
+                        return true;
+                    case Keys.NumPad5:
+                        btnResetSearch.PerformClick();
+                        return true;
+                    case Keys.NumPad6:
+                        btnSearch.PerformClick();
                         return true;
                     default:
                         return base.ProcessCmdKey(ref msg, keyData);
@@ -165,7 +171,7 @@ namespace ImageViewApp
             {
                 deliveryLocationYes = folderBrowserDialog.SelectedPath;
                 CheckEnablePickFolderButton();
-                MessageBox.Show("Location set for 'Pass' selection: " + deliveryLocationYes, "Location Set", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowToast("Location set for 'Pass' selection:\n" + deliveryLocationYes, 3000, true);
                 btnPickDeliveryLocationYes.Enabled = false;
             }
         }
@@ -177,7 +183,7 @@ namespace ImageViewApp
             {
                 deliveryLocationNo = folderBrowserDialog.SelectedPath;
                 CheckEnablePickFolderButton();
-                MessageBox.Show("Location set for 'Fail' selection: " + deliveryLocationNo, "Location Set", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowToast("Location set for 'Fail' selection:\n" + deliveryLocationNo, 3000, true);
                 btnPickDeliveryLocationNo.Enabled = false;
             }
         }
@@ -198,7 +204,7 @@ namespace ImageViewApp
                 btnYes.Enabled = true;
                 btnNo.Enabled = true;
 
-                MessageBox.Show("Image folder selected: " + imageFolderPath, "Folder Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowToast("Image folder selected:\n" + imageFolderPath, 3000, true);
                 btnPickFolder.Enabled = false;
                 btnSaveAs.Enabled = true;
                 btnSearch.Enabled = true;
@@ -211,26 +217,25 @@ namespace ImageViewApp
             }
         }
 
-        const string PASSED_MESSAGE = "**Passed**\nFile has passed and been sent to: {0}";
-        const string FAILED_MESSAGE = "**Failed**\nFile has failed and been sent to: {0}";
+        const string PASSED_MESSAGE = "✅ Image successfully passed!\nSent to: {0}";
+        const string FAILED_MESSAGE = "❌ Image marked as failed.\nSent to: {0}";
 
         private async void btnYes_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(deliveryLocationYes))
             {
-                btnYes.Enabled = false; // Prevent spam clicks
+                btnYes.Enabled = false;
                 try
                 {
                     MoveCurrentImage(deliveryLocationYes);
                     string passMessage = string.Format(PASSED_MESSAGE, deliveryLocationYes);
-                    ShowToast(passMessage);
+                    ShowToast(passMessage, 2500, true);
                 }
                 catch (Exception ex)
                 {
-                    ShowToast("File failed to move: " + ex.Message, 3000, true);
+                    ShowToast("⚠️ Failed to move image: " + ex.Message, 3000, true);
                 }
 
-                // Delay before re-enabling the button
                 await Task.Delay(1500);
                 btnYes.Enabled = true;
             }
@@ -242,19 +247,18 @@ namespace ImageViewApp
         {
             if (!string.IsNullOrEmpty(deliveryLocationNo))
             {
-                btnNo.Enabled = false; // Prevent spam clicks
+                btnNo.Enabled = false;
                 try
                 {
                     MoveCurrentImage(deliveryLocationNo);
                     string failMessage = string.Format(FAILED_MESSAGE, deliveryLocationNo);
-                    ShowToast(failMessage);
+                    ShowToast(failMessage, 2500, true);
                 }
                 catch (Exception ex)
                 {
-                    ShowToast("File failed to move: " + ex.Message, 3000, true);
+                    ShowToast("⚠️ Failed to move image: " + ex.Message, 3000, true);
                 }
 
-                // Delay before re-enabling the button
                 await Task.Delay(1500);
                 btnNo.Enabled = true;
             }
@@ -469,42 +473,72 @@ namespace ImageViewApp
         {
             using (var inputForm = new Form())
             {
-                inputForm.Text = "Search";
+                inputForm.Text = "Search Image";
                 inputForm.FormBorderStyle = FormBorderStyle.FixedDialog;
                 inputForm.StartPosition = FormStartPosition.CenterScreen;
                 inputForm.MinimizeBox = false;
                 inputForm.MaximizeBox = false;
+                inputForm.ClientSize = new Size(300, 150);
+                inputForm.BackColor = Color.FromArgb(30, 30, 30);
 
-                var label = new Label();
-                label.Text = "Enter the name to search:";
-                label.AutoSize = true;
-                label.Location = new Point(10, 10);
+                var label = new Label
+                {
+                    Text = "🔍 Enter image name to search:",
+                    AutoSize = true,
+                    ForeColor = Color.White,
+                    Font = new Font("Segoe UI", 10, FontStyle.Regular),
+                    Location = new Point(20, 20)
+                };
 
-                var textBox = new TextBox();
-                textBox.Location = new Point(10, 40);
-                textBox.Width = 200;
+                var textBox = new TextBox
+                {
+                    Location = new Point(20, 50),
+                    Width = 250,
+                    Font = new Font("Segoe UI", 10),
+                    BackColor = Color.FromArgb(45, 45, 48),
+                    ForeColor = Color.White,
+                    BorderStyle = BorderStyle.FixedSingle
+                };
 
-                var okButton = new Button();
-                okButton.Text = "OK";
-                okButton.DialogResult = DialogResult.OK;
-                okButton.Location = new Point(10, 80);
+                var okButton = new Button
+                {
+                    Text = "OK",
+                    DialogResult = DialogResult.OK,
+                    Width = 100,
+                    Height = 30,
+                    Font = new Font("Segoe UI", 9),
+                    Location = new Point(40, 95),
+                    BackColor = Color.FromArgb(70, 130, 180),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat
+                };
+                okButton.FlatAppearance.BorderSize = 0;
 
-                var cancelButton = new Button();
-                cancelButton.Text = "Cancel";
-                cancelButton.DialogResult = DialogResult.Cancel;
-                cancelButton.Location = new Point(90, 80);
+                var cancelButton = new Button
+                {
+                    Text = "Cancel",
+                    DialogResult = DialogResult.Cancel,
+                    Width = 100,
+                    Height = 30,
+                    Font = new Font("Segoe UI", 9),
+                    Location = new Point(160, 95),
+                    BackColor = Color.FromArgb(100, 100, 100),
+                    ForeColor = Color.White,
+                    FlatStyle = FlatStyle.Flat
+                };
+                cancelButton.FlatAppearance.BorderSize = 0;
 
                 inputForm.Controls.Add(label);
                 inputForm.Controls.Add(textBox);
                 inputForm.Controls.Add(okButton);
                 inputForm.Controls.Add(cancelButton);
 
-                if (inputForm.ShowDialog() == DialogResult.OK)
-                {
-                    return textBox.Text.Trim();
-                }
+                inputForm.AcceptButton = okButton;
+                inputForm.CancelButton = cancelButton;
 
-                return null;
+                return inputForm.ShowDialog() == DialogResult.OK
+                    ? textBox.Text.Trim()
+                    : null;
             }
         }
 
