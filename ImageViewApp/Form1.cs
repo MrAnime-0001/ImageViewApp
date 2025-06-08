@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Windows.Forms;
 
 namespace ImageViewApp
@@ -42,6 +43,12 @@ namespace ImageViewApp
                     case Keys.NumPad2:
                         btnNo.PerformClick();
                         return true;
+                    case Keys.NumPad3:
+                        btnHidePictureBox.PerformClick();
+                        return true;
+                    case Keys.NumPad4:
+                        btnSkipSimilar.PerformClick();
+                        return true;
                     default:
                         return base.ProcessCmdKey(ref msg, keyData);
                 }
@@ -64,6 +71,45 @@ namespace ImageViewApp
             {
                 EnableKeyInput();
             }
+        }
+
+        public static void ShowToast(string message, int duration = 2000, bool playSound = true)
+        {
+            Form toast = new Form
+            {
+                FormBorderStyle = FormBorderStyle.None,
+                StartPosition = FormStartPosition.Manual,
+                ShowInTaskbar = false,
+                TopMost = true,
+                BackColor = Color.FromArgb(45, 45, 48),
+                Size = new Size(250, 60),
+                Opacity = 0.9
+            };
+
+            toast.Controls.Add(new Label
+            {
+                Text = message,
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                ForeColor = Color.White
+            });
+
+            var screen = Screen.PrimaryScreen.WorkingArea;
+            toast.Location = new Point(screen.Right - toast.Width - 10, screen.Bottom - toast.Height - 10);
+
+            toast.Shown += async (s, e) =>
+            {
+                if (playSound)
+                {
+                    SystemSounds.Exclamation.Play(); // Default Windows notification sound
+                }
+
+                await Task.Delay(duration);
+                toast.Close();
+            };
+
+            toast.Show();
         }
 
         public MainForm()
@@ -168,45 +214,51 @@ namespace ImageViewApp
         const string PASSED_MESSAGE = "**Passed**\nFile has passed and been sent to: {0}";
         const string FAILED_MESSAGE = "**Failed**\nFile has failed and been sent to: {0}";
 
-        private void btnYes_Click(object sender, EventArgs e)
+        private async void btnYes_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(deliveryLocationYes))
             {
+                btnYes.Enabled = false; // Prevent spam clicks
                 try
                 {
                     MoveCurrentImage(deliveryLocationYes);
-
-                    // Display the pass message with bold text
                     string passMessage = string.Format(PASSED_MESSAGE, deliveryLocationYes);
-                    MessageBox.Show(passMessage, "File Sent", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowToast(passMessage);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("File has failed to move: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ShowToast("File failed to move: " + ex.Message, 3000, true);
                 }
+
+                // Delay before re-enabling the button
+                await Task.Delay(1500);
+                btnYes.Enabled = true;
             }
-            // Deselect the button
+
             this.ActiveControl = null;
         }
 
-        private void btnNo_Click(object sender, EventArgs e)
+        private async void btnNo_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(deliveryLocationNo))
             {
+                btnNo.Enabled = false; // Prevent spam clicks
                 try
                 {
                     MoveCurrentImage(deliveryLocationNo);
-
-                    // Display the fail message with bold text
                     string failMessage = string.Format(FAILED_MESSAGE, deliveryLocationNo);
-                    MessageBox.Show(failMessage, "File Sent", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowToast(failMessage);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("File has failed to move: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    ShowToast("File failed to move: " + ex.Message, 3000, true);
                 }
+
+                // Delay before re-enabling the button
+                await Task.Delay(1500);
+                btnNo.Enabled = true;
             }
-            // Deselect the button
+
             this.ActiveControl = null;
         }
 
@@ -245,25 +297,20 @@ namespace ImageViewApp
 
         private void btnTopMost_Click(object sender, EventArgs e)
         {
-            // Toggle the TopMost property of the form
+            // Toggle the TopMost property
             TopMost = !TopMost;
 
-            // Update the form's TopMost state
             if (TopMost)
             {
-                // Set the form to be topmost
                 this.TopMost = true;
-                // Display a message to indicate that TopMost is enabled
-                MessageBox.Show("TopMost enabled.", "TopMost", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowToast("TopMost enabled.", 2000, true);
             }
             else
             {
-                // Set the form to not be topmost
                 this.TopMost = false;
-                // Display a message to indicate that TopMost is disabled
-                MessageBox.Show("TopMost disabled.", "TopMost", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowToast("TopMost disabled.", 2000, true);
             }
-            // Deselect the button
+
             this.ActiveControl = null;
         }
 
@@ -278,9 +325,8 @@ namespace ImageViewApp
             locations[2] = imageFolderPath;
 
             File.WriteAllLines(defaultSaveFilePath, locations);
-            MessageBox.Show("Locations saved successfully.", "Save", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            ShowToast("Locations saved successfully.", 2500, true);
 
-            // Deselect the button
             this.ActiveControl = null;
         }
 
@@ -292,12 +338,10 @@ namespace ImageViewApp
             {
                 string[] locations = File.ReadAllLines(defaultLoadFilePath);
 
-                // Assign the loaded locations to the respective variables
                 deliveryLocationYes = locations[0];
                 deliveryLocationNo = locations[1];
                 imageFolderPath = locations[2];
 
-                // Update the UI accordingly
                 btnPickDeliveryLocationYes.Enabled = false;
                 btnPickDeliveryLocationNo.Enabled = false;
                 btnPickFolder.Enabled = false;
@@ -312,20 +356,18 @@ namespace ImageViewApp
                 btnHidePictureBox.Enabled = true;
                 btnrestartAnimatedImage.Enabled = true;
 
-                // Load the images
                 LoadImages();
 
-                MessageBox.Show("Locations and images loaded successfully.", "Load", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowToast("Locations and images loaded successfully.", 2500, true);
             }
             else
             {
-                MessageBox.Show("No saved data found.", "Load", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowToast("No saved data found.", 2500, true);
             }
-            // Deselect the button
+
             this.ActiveControl = null;
         }
 
-        // Add this event handler to the MainForm class
         private void btnClearSaveData_Click(object sender, EventArgs e)
         {
             string defaultSaveFilePath = Path.Combine(Application.StartupPath, "SaveData.txt");
@@ -333,13 +375,13 @@ namespace ImageViewApp
             if (File.Exists(defaultSaveFilePath))
             {
                 File.Delete(defaultSaveFilePath);
-                MessageBox.Show("SaveData cleared successfully.", "Clear SaveData", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowToast("SaveData cleared successfully.", 2500, true);
             }
             else
             {
-                MessageBox.Show("SaveData file not found.", "Clear SaveData", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowToast("SaveData file not found.", 2500, true);
             }
-            // Deselect the button
+
             this.ActiveControl = null;
         }
 
@@ -351,16 +393,15 @@ namespace ImageViewApp
             {
                 savedFilePath = saveFileDialog.FileName;
 
-                // Create a string array to store the locations
                 string[] locations = new string[3];
                 locations[0] = deliveryLocationYes;
                 locations[1] = deliveryLocationNo;
                 locations[2] = imageFolderPath;
 
                 File.WriteAllLines(savedFilePath, locations);
-                MessageBox.Show("Locations saved successfully.", "Save", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowToast("Locations saved successfully.", 2500, true);
             }
-            // Deselect the button
+
             this.ActiveControl = null;
         }
 
@@ -373,12 +414,10 @@ namespace ImageViewApp
                 savedFilePath = openFileDialog.FileName;
                 string[] locations = File.ReadAllLines(savedFilePath);
 
-                // Assign the loaded locations to the respective variables
                 deliveryLocationYes = locations[0];
                 deliveryLocationNo = locations[1];
                 imageFolderPath = locations[2];
 
-                // Update the UI accordingly
                 btnPickDeliveryLocationYes.Enabled = false;
                 btnPickDeliveryLocationNo.Enabled = false;
                 btnPickFolder.Enabled = false;
@@ -393,12 +432,11 @@ namespace ImageViewApp
                 btnHidePictureBox.Enabled = true;
                 btnrestartAnimatedImage.Enabled = true;
 
-                // Load the images
                 LoadImages();
 
-                MessageBox.Show("Locations and images loaded successfully.", "Load", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowToast("Locations and images loaded successfully.", 2500, true);
             }
-            // Deselect the button
+
             this.ActiveControl = null;
         }
 
@@ -409,7 +447,8 @@ namespace ImageViewApp
             if (!string.IsNullOrEmpty(searchName))
             {
                 // Find the first image file that contains the search name
-                string matchingFile = imageFiles.FirstOrDefault(file => Path.GetFileNameWithoutExtension(file).IndexOf(searchName, StringComparison.OrdinalIgnoreCase) >= 0);
+                string matchingFile = imageFiles.FirstOrDefault(file =>
+                    Path.GetFileNameWithoutExtension(file).IndexOf(searchName, StringComparison.OrdinalIgnoreCase) >= 0);
 
                 if (matchingFile != null)
                 {
@@ -419,10 +458,10 @@ namespace ImageViewApp
                 }
                 else
                 {
-                    MessageBox.Show("No matching image found.", "Search", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowToast("No matching image found.", 2500, true);
                 }
             }
-            // Deselect the button
+
             this.ActiveControl = null;
         }
 
@@ -494,36 +533,10 @@ namespace ImageViewApp
                 currentImageIndex = 0;
                 DisplayCurrentImage();
 
-                MessageBox.Show("Image folder selected: " + imageFolderPath, "Folder Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ShowToast("Image folder selected:\n" + imageFolderPath, 3000, true);
                 btnPickFolder.Enabled = false;
             }
         }
-
-        private async Task LoadImagesAsync()
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(imageFolderPath))
-                {
-                    imageFiles = await Task.Run(() => Directory.GetFiles(imageFolderPath)
-                                                              .Where(IsImageFile)
-                                                              .OrderBy(f => f)
-                                                              .ToArray());
-                    currentImageIndex = 0;
-                    DisplayCurrentImage();
-                    MessageBox.Show("Images loaded successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                MessageBox.Show("Access to the folder is denied. " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred while loading images. " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
 
         private void btnSkip_Click(object sender, EventArgs e)
         {
@@ -588,40 +601,28 @@ namespace ImageViewApp
 
         private void btnSearchv2_Click(object sender, EventArgs e)
         {
-            // Create an OpenFileDialog instance
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                // Set the initial directory to the imageFolderPath
                 openFileDialog.InitialDirectory = imageFolderPath;
-
-                // Filter the files to only show image files
                 openFileDialog.Filter = "Image Files (*.jpg, *.jpeg, *.png, *.gif, *.bmp)|*.jpg;*.jpeg;*.png;*.gif;*.bmp";
 
-                // Show the OpenFileDialog and get the result
                 DialogResult result = openFileDialog.ShowDialog();
 
-                // If the user selected an image file
                 if (result == DialogResult.OK)
                 {
-                    // Get the selected image file path
                     string selectedImagePath = openFileDialog.FileName;
 
-                    // Find the index of the selected image in the imageFiles array
-                    int selectedImageIndex = Array.FindIndex(imageFiles, image => image.Equals(selectedImagePath, StringComparison.OrdinalIgnoreCase));
+                    int selectedImageIndex = Array.FindIndex(imageFiles, image =>
+                        image.Equals(selectedImagePath, StringComparison.OrdinalIgnoreCase));
 
-                    // If the selected image was found in the imageFiles array
                     if (selectedImageIndex != -1)
                     {
-                        // Set the current image index to the index of the selected image
                         currentImageIndex = selectedImageIndex;
-
-                        // Update the UI to display the selected image
                         DisplayCurrentImage();
                     }
                     else
                     {
-                        // Show a message box indicating that the selected image was not found in the imageFiles array
-                        MessageBox.Show("The selected image was not found in the image folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        ShowToast("Selected image not found in current image folder.", 3000, true);
                     }
                 }
             }
