@@ -118,6 +118,20 @@ namespace ImageViewApp
             toast.Show();
         }
 
+        private void SetHighPerformanceMode()
+        {
+            try
+            {
+                Process currentProcess = Process.GetCurrentProcess();
+                currentProcess.PriorityClass = ProcessPriorityClass.High;
+                //ShowToast("⚡ High-performance mode enabled.");
+            }
+            catch (Exception ex)
+            {
+                ShowToast("❌ Error setting high-performance mode: " + ex.Message, 3000, true);
+            }
+        }
+
         public MainForm()
         {
             InitializeComponent();
@@ -149,19 +163,6 @@ namespace ImageViewApp
 
             // Add this code in the MainForm constructor or in the designer
             btnClearSaveData.Click += btnClearSaveData_Click;
-        }
-
-        private void SetHighPerformanceMode()
-        {
-            try
-            {
-                Process currentProcess = Process.GetCurrentProcess();
-                currentProcess.PriorityClass = ProcessPriorityClass.High; // Options: Idle, BelowNormal, Normal, AboveNormal, High, RealTime
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error setting high-performance mode: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
 
         private void btnPickDeliveryLocationYes_Click(object sender, EventArgs e)
