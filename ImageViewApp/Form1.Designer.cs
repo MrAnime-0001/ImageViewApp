@@ -50,12 +50,12 @@
             btnLoadAs = new ToolStripMenuItem();
             btnSkip = new ToolStripMenuItem();
             btnSkipSimilar = new ToolStripMenuItem();
+            btnSkipLayout = new ToolStripMenuItem();
             btnResetSearch = new ToolStripMenuItem();
             btnHidePictureBox = new ToolStripMenuItem();
             ExtraToolStripMenuItem = new ToolStripMenuItem();
             btnSearch = new ToolStripMenuItem();
             btnSearchv2 = new ToolStripMenuItem();
-            btnrestartAnimatedImage = new ToolStripMenuItem();
             panelFooter = new Panel();
             btnTopMost = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBox).BeginInit();
@@ -266,7 +266,7 @@
             // 
             menuStrip.BackColor = Color.FromArgb(45, 45, 48);
             menuStrip.ForeColor = Color.White;
-            menuStrip.Items.AddRange(new ToolStripItem[] { saveLoadToolStripMenuItem, btnSkip, btnSkipSimilar, btnResetSearch, btnHidePictureBox, ExtraToolStripMenuItem });
+            menuStrip.Items.AddRange(new ToolStripItem[] { saveLoadToolStripMenuItem, btnSkip, btnSkipSimilar, btnSkipLayout, btnResetSearch, btnHidePictureBox, ExtraToolStripMenuItem });
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";
             menuStrip.RenderMode = ToolStripRenderMode.Professional;
@@ -343,6 +343,13 @@
             btnSkipSimilar.Text = "Skip Similar";
             btnSkipSimilar.Click += btnSkipSimilar_Click;
             // 
+            // btnSkipLayout
+            // 
+            btnSkipLayout.Name = "btnSkipLayout";
+            btnSkipLayout.Size = new Size(80, 20);
+            btnSkipLayout.Text = "Skip Layout";
+            btnSkipLayout.Click += btnSkipLayout_Click;
+            // 
             // btnResetSearch
             // 
             btnResetSearch.ForeColor = Color.White;
@@ -361,7 +368,7 @@
             // 
             // ExtraToolStripMenuItem
             // 
-            ExtraToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { btnSearch, btnSearchv2, btnrestartAnimatedImage });
+            ExtraToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { btnSearch, btnSearchv2 });
             ExtraToolStripMenuItem.ForeColor = Color.White;
             ExtraToolStripMenuItem.Name = "ExtraToolStripMenuItem";
             ExtraToolStripMenuItem.Size = new Size(44, 20);
@@ -372,7 +379,7 @@
             btnSearch.BackColor = Color.FromArgb(60, 60, 60);
             btnSearch.ForeColor = Color.White;
             btnSearch.Name = "btnSearch";
-            btnSearch.Size = new Size(201, 22);
+            btnSearch.Size = new Size(175, 22);
             btnSearch.Text = "Search";
             btnSearch.Click += btnSearch_Click;
             // 
@@ -381,18 +388,9 @@
             btnSearchv2.BackColor = Color.FromArgb(60, 60, 60);
             btnSearchv2.ForeColor = Color.White;
             btnSearchv2.Name = "btnSearchv2";
-            btnSearchv2.Size = new Size(201, 22);
+            btnSearchv2.Size = new Size(175, 22);
             btnSearchv2.Text = "File Explorer Search";
             btnSearchv2.Click += btnSearchv2_Click;
-            // 
-            // btnrestartAnimatedImage
-            // 
-            btnrestartAnimatedImage.BackColor = Color.FromArgb(60, 60, 60);
-            btnrestartAnimatedImage.ForeColor = Color.White;
-            btnrestartAnimatedImage.Name = "btnrestartAnimatedImage";
-            btnrestartAnimatedImage.Size = new Size(201, 22);
-            btnrestartAnimatedImage.Text = "Restart Animated Image";
-            btnrestartAnimatedImage.Click += btnrestartAnimatedImage_Click;
             // 
             // panelFooter
             // 
@@ -472,12 +470,12 @@
         private ToolStripMenuItem ExtraToolStripMenuItem;
         private ToolStripMenuItem btnSearch;
         private ToolStripMenuItem btnSearchv2;
-        private ToolStripMenuItem btnrestartAnimatedImage;
         private ToolStripMenuItem btnSkipSimilar;
         private ToolStripMenuItem btnSkip;
         private ToolStripMenuItem btnResetSearch;
         private ToolStripMenuItem btnHidePictureBox;
         private Panel panelFooter;
         private Label btnTopMost;
+        private ToolStripMenuItem btnSkipLayout;
     }
 }

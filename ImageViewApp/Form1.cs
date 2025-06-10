@@ -21,7 +21,7 @@ namespace ImageViewApp
         {
             keyInputEnabled = true;
             btnYes.Text = "Yes (NumPad 1)";
-            btnNo.Text = "No (NumPad 2)";
+            btnNo.Text = "No (NumPad 3)";
         }
 
         private void DisableKeyInput()
@@ -41,19 +41,25 @@ namespace ImageViewApp
                         btnYes.PerformClick();
                         return true;
                     case Keys.NumPad2:
-                        btnNo.PerformClick();
+                        btnHidePictureBox.PerformClick();
                         return true;
                     case Keys.NumPad3:
-                        btnHidePictureBox.PerformClick();
+                        btnNo.PerformClick();
                         return true;
                     case Keys.NumPad4:
                         btnSkipSimilar.PerformClick();
                         return true;
                     case Keys.NumPad5:
-                        btnResetSearch.PerformClick();
+                        btnSkipLayout.PerformClick();
                         return true;
                     case Keys.NumPad6:
+                        btnResetSearch.PerformClick();
+                        return true;
+                    case Keys.NumPad8:
                         btnSearch.PerformClick();
+                        return true;
+                    case Keys.NumPad9:
+                        btnSearchv2.PerformClick();
                         return true;
                     default:
                         return base.ProcessCmdKey(ref msg, keyData);
@@ -158,7 +164,7 @@ namespace ImageViewApp
             btnSkipSimilar.Enabled = false;
             btnResetSearch.Enabled = false;
             btnHidePictureBox.Enabled = false;
-            btnrestartAnimatedImage.Enabled = false;
+            //btnrestartAnimatedImage.Enabled = false;
 
             // Add these lines to disable key input initially
             DisableKeyInput();
@@ -226,7 +232,7 @@ namespace ImageViewApp
                 btnSkipSimilar.Enabled = true;
                 btnResetSearch.Enabled = true;
                 btnHidePictureBox.Enabled = true;
-                btnrestartAnimatedImage.Enabled = true;
+                //btnrestartAnimatedImage.Enabled = true;
             }
         }
 
@@ -294,7 +300,7 @@ namespace ImageViewApp
             btnSkipSimilar.Enabled = false;
             btnResetSearch.Enabled = false;
             btnHidePictureBox.Enabled = false;
-            btnrestartAnimatedImage.Enabled = false;
+            //btnrestartAnimatedImage.Enabled = false;
 
             // Deselect the button
             this.ActiveControl = null;
@@ -364,7 +370,7 @@ namespace ImageViewApp
                 btnSkipSimilar.Enabled = true;
                 btnResetSearch.Enabled = true;
                 btnHidePictureBox.Enabled = true;
-                btnrestartAnimatedImage.Enabled = true;
+                //btnrestartAnimatedImage.Enabled = true;
 
                 LoadImages();
 
@@ -440,7 +446,7 @@ namespace ImageViewApp
                 btnSkipSimilar.Enabled = true;
                 btnResetSearch.Enabled = true;
                 btnHidePictureBox.Enabled = true;
-                btnrestartAnimatedImage.Enabled = true;
+                //btnrestartAnimatedImage.Enabled = true;
 
                 LoadImages();
 
@@ -668,10 +674,11 @@ namespace ImageViewApp
             }
         }
 
-        private void btnrestartAnimatedImage_Click(object sender, EventArgs e)
-        {
-            pictureBox.ImageLocation = imageFiles[currentImageIndex];
-        }
+        // This button hasn't had a use so far, so I just disabled it.
+        //private void btnrestartAnimatedImage_Click(object sender, EventArgs e)
+        //{
+        //    pictureBox.ImageLocation = imageFiles[currentImageIndex];
+        //}
 
         private void btnHidePictureBox_Click(object sender, EventArgs e)
         {
@@ -694,7 +701,7 @@ namespace ImageViewApp
             btnSkip.Enabled = isVisible;
             btnSkipSimilar.Enabled = isVisible;
             btnResetSearch.Enabled = isVisible;
-            btnrestartAnimatedImage.Enabled = isVisible;
+            //btnrestartAnimatedImage.Enabled = isVisible;
 
             // Change button text based on visibility
             btnHidePictureBox.Text = isVisible ? "Hide Image" : "Show Image";
@@ -733,6 +740,59 @@ namespace ImageViewApp
 
             string[] words = filename.Split(new[] { ' ', '_', '-' }, StringSplitOptions.RemoveEmptyEntries);
             return words.Length > 0 ? words[0] : filename; // Return first word or filename if no spaces
+        }
+
+        // Helper function to get layout part before dash
+        private string GetLayoutPrefix(string filename)
+        {
+            if (string.IsNullOrWhiteSpace(filename))
+                return string.Empty;
+
+            string nameWithoutExtension = Path.GetFileNameWithoutExtension(filename);
+
+            // Get text before the dash
+            int dashIndex = nameWithoutExtension.IndexOf('-');
+            if (dashIndex == -1)
+                return string.Empty;
+
+            string beforeDash = nameWithoutExtension.Substring(0, dashIndex).Trim();
+
+            // Get the last two words (e.g., "SS2 H2" from "Abashiri SS2 H2")
+            string[] parts = beforeDash.Split(' ');
+            if (parts.Length >= 2)
+            {
+                return parts[^2] + " " + parts[^1]; // Last two words
+            }
+
+            return beforeDash;
+        }
+
+        private void btnSkipLayout_Click(object sender, EventArgs e)
+        {
+            if (imageFiles.Length == 0)
+                return;
+
+            string currentLayout = GetLayoutPrefix(imageFiles[currentImageIndex]);
+
+            int startIndex = currentImageIndex;
+
+            do
+            {
+                currentImageIndex++;
+                if (currentImageIndex >= imageFiles.Length)
+                    currentImageIndex = 0; // Wrap around
+
+                string newLayout = GetLayoutPrefix(imageFiles[currentImageIndex]);
+
+                if (newLayout != currentLayout)
+                    break;
+
+            } while (currentImageIndex != startIndex); // Prevent infinite loop
+
+            DisplayCurrentImage();
+
+            // Deselect the button
+            this.ActiveControl = null;
         }
     }
 }
