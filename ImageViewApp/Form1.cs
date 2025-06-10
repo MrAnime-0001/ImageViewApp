@@ -162,6 +162,7 @@ namespace ImageViewApp
             btnSearchv2.Enabled = false;
             btnSkip.Enabled = false;
             btnSkipSimilar.Enabled = false;
+            btnSkipLayout.Enabled = false;
             btnResetSearch.Enabled = false;
             btnHidePictureBox.Enabled = false;
             //btnrestartAnimatedImage.Enabled = false;
@@ -230,6 +231,7 @@ namespace ImageViewApp
                 btnSearchv2.Enabled = true;
                 btnSkip.Enabled = true;
                 btnSkipSimilar.Enabled = true;
+                btnSkipLayout.Enabled = true;
                 btnResetSearch.Enabled = true;
                 btnHidePictureBox.Enabled = true;
                 //btnrestartAnimatedImage.Enabled = true;
@@ -298,6 +300,7 @@ namespace ImageViewApp
             btnSearchv2.Enabled = false;
             btnSkip.Enabled = false;
             btnSkipSimilar.Enabled = false;
+            btnSkipLayout.Enabled = false;
             btnResetSearch.Enabled = false;
             btnHidePictureBox.Enabled = false;
             //btnrestartAnimatedImage.Enabled = false;
@@ -368,6 +371,7 @@ namespace ImageViewApp
                 btnSearchv2.Enabled = true;
                 btnSkip.Enabled = true;
                 btnSkipSimilar.Enabled = true;
+                btnSkipLayout.Enabled = true;
                 btnResetSearch.Enabled = true;
                 btnHidePictureBox.Enabled = true;
                 //btnrestartAnimatedImage.Enabled = true;
@@ -444,6 +448,7 @@ namespace ImageViewApp
                 btnSearchv2.Enabled = true;
                 btnSkip.Enabled = true;
                 btnSkipSimilar.Enabled = true;
+                btnSkipLayout.Enabled = true;
                 btnResetSearch.Enabled = true;
                 btnHidePictureBox.Enabled = true;
                 //btnrestartAnimatedImage.Enabled = true;
