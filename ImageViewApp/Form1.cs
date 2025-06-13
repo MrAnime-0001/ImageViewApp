@@ -124,6 +124,50 @@ namespace ImageViewApp
             toast.Show();
         }
 
+        public static void ShowToastBottomRightOfForm(Form parentForm, string message, int duration = 2000, bool playSound = true)
+        {
+            Form toast = new Form
+            {
+                FormBorderStyle = FormBorderStyle.None,
+                StartPosition = FormStartPosition.Manual,
+                ShowInTaskbar = false,
+                TopMost = true,
+                BackColor = Color.FromArgb(45, 45, 48),
+                Size = new Size(250, 60),
+                Opacity = 0.9
+            };
+
+            Label lbl = new Label
+            {
+                Text = message,
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                ForeColor = Color.White,
+                BackColor = Color.Transparent
+            };
+
+            toast.Controls.Add(lbl);
+
+            // Position toast at the bottom-right of the parent form
+            int x = parentForm.Location.X + parentForm.Width - toast.Width - 10;
+            int y = parentForm.Location.Y + parentForm.Height - toast.Height - 10;
+            toast.Location = new Point(x, y);
+
+            toast.Shown += async (s, e) =>
+            {
+                if (playSound)
+                {
+                    SystemSounds.Exclamation.Play(); // Plays default notification sound
+                }
+
+                await Task.Delay(duration);
+                toast.Close();
+            };
+
+            toast.Show(parentForm); // Parent ensures it's displayed above the form
+        }
+
         private void SetHighPerformanceMode()
         {
             try
@@ -246,11 +290,11 @@ namespace ImageViewApp
                 {
                     MoveCurrentImage(deliveryLocationYes);
                     string passMessage = string.Format(PASSED_MESSAGE, deliveryLocationYes);
-                    ShowToast(passMessage, 2500, true);
+                    ShowToastBottomRightOfForm(this, passMessage, 2500, true);
                 }
                 catch (Exception ex)
                 {
-                    ShowToast("⚠️ Failed to move image: " + ex.Message, 3000, true);
+                    ShowToastBottomRightOfForm(this, "⚠️ Failed to move image: " + ex.Message, 3000, true);
                 }
 
                 await DelayAndReenableAsync();
@@ -267,11 +311,11 @@ namespace ImageViewApp
                 {
                     MoveCurrentImage(deliveryLocationNo);
                     string failMessage = string.Format(FAILED_MESSAGE, deliveryLocationNo);
-                    ShowToast(failMessage, 2500, true);
+                    ShowToastBottomRightOfForm(this, failMessage, 2500, true);
                 }
                 catch (Exception ex)
                 {
-                    ShowToast("⚠️ Failed to move image: " + ex.Message, 3000, true);
+                    ShowToastBottomRightOfForm(this, "⚠️ Failed to move image: " + ex.Message, 3000, true);
                 }
 
                 await DelayAndReenableAsync();
