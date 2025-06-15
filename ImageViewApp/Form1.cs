@@ -752,6 +752,7 @@ namespace ImageViewApp
             btnSearchv2.Enabled = isVisible;
             btnSkip.Enabled = isVisible;
             btnSkipSimilar.Enabled = isVisible;
+            btnSkipLayout.Enabled = isVisible;
             btnResetSearch.Enabled = isVisible;
             //btnrestartAnimatedImage.Enabled = isVisible;
 
