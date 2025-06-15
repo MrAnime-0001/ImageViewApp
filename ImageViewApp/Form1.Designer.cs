@@ -67,7 +67,7 @@
             // 
             // pictureBox
             // 
-            pictureBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            pictureBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             pictureBox.BackColor = Color.FromArgb(40, 40, 40);
             pictureBox.BorderStyle = BorderStyle.FixedSingle;
             pictureBox.Location = new Point(20, 80);
@@ -98,6 +98,7 @@
             // 
             // btnPickFolder
             // 
+            btnPickFolder.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             btnPickFolder.BackColor = Color.FromArgb(0, 122, 204);
             btnPickFolder.FlatAppearance.BorderSize = 0;
             btnPickFolder.FlatAppearance.MouseDownBackColor = Color.FromArgb(0, 100, 170);
@@ -114,6 +115,7 @@
             // 
             // btnPickDeliveryLocationYes
             // 
+            btnPickDeliveryLocationYes.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             btnPickDeliveryLocationYes.BackColor = Color.FromArgb(46, 204, 113);
             btnPickDeliveryLocationYes.FlatAppearance.BorderSize = 0;
             btnPickDeliveryLocationYes.FlatAppearance.MouseDownBackColor = Color.FromArgb(39, 174, 96);
@@ -130,6 +132,7 @@
             // 
             // btnPickDeliveryLocationNo
             // 
+            btnPickDeliveryLocationNo.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnPickDeliveryLocationNo.BackColor = Color.FromArgb(231, 76, 60);
             btnPickDeliveryLocationNo.FlatAppearance.BorderSize = 0;
             btnPickDeliveryLocationNo.FlatAppearance.MouseDownBackColor = Color.FromArgb(192, 57, 43);
@@ -146,6 +149,7 @@
             // 
             // btnYes
             // 
+            btnYes.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             btnYes.BackColor = Color.FromArgb(46, 204, 113);
             btnYes.FlatAppearance.BorderSize = 0;
             btnYes.FlatAppearance.MouseDownBackColor = Color.FromArgb(39, 174, 96);
@@ -163,6 +167,7 @@
             // 
             // btnNo
             // 
+            btnNo.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             btnNo.BackColor = Color.FromArgb(231, 76, 60);
             btnNo.FlatAppearance.BorderSize = 0;
             btnNo.FlatAppearance.MouseDownBackColor = Color.FromArgb(192, 57, 43);
@@ -180,6 +185,7 @@
             // 
             // btnReset
             // 
+            btnReset.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             btnReset.BackColor = Color.FromArgb(155, 89, 182);
             btnReset.FlatAppearance.BorderSize = 0;
             btnReset.FlatAppearance.MouseDownBackColor = Color.FromArgb(125, 60, 152);
@@ -196,6 +202,7 @@
             // 
             // btnClose
             // 
+            btnClose.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             btnClose.BackColor = Color.FromArgb(52, 73, 94);
             btnClose.FlatAppearance.BorderSize = 0;
             btnClose.FlatAppearance.MouseDownBackColor = Color.FromArgb(44, 62, 80);
@@ -212,6 +219,7 @@
             // 
             // btnToggleKeyInput
             // 
+            btnToggleKeyInput.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             btnToggleKeyInput.BackColor = Color.FromArgb(241, 196, 15);
             btnToggleKeyInput.FlatAppearance.BorderSize = 0;
             btnToggleKeyInput.FlatAppearance.MouseDownBackColor = Color.FromArgb(212, 172, 13);
@@ -253,6 +261,7 @@
             // 
             // lblAppTitle
             // 
+            lblAppTitle.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             lblAppTitle.AutoSize = true;
             lblAppTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point);
             lblAppTitle.ForeColor = Color.FromArgb(52, 152, 219);
@@ -427,7 +436,7 @@
             Controls.Add(pictureBox);
             Controls.Add(panelHeader);
             Controls.Add(menuStrip);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
+            FormBorderStyle = FormBorderStyle.Sizable;
             MainMenuStrip = menuStrip;
             MinimumSize = new Size(1200, 600);
             Name = "MainForm";

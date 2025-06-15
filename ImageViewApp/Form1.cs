@@ -55,6 +55,9 @@ namespace ImageViewApp
                     case Keys.NumPad6:
                         btnResetSearch.PerformClick();
                         return true;
+                    case Keys.NumPad7:
+                        btnLoad.PerformClick();
+                        return true;
                     case Keys.NumPad8:
                         btnSearch.PerformClick();
                         return true;
