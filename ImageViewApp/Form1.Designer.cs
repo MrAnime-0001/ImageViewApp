@@ -52,7 +52,7 @@
             btnSkipSimilar = new ToolStripMenuItem();
             btnSkipLayout = new ToolStripMenuItem();
             btnResetSearch = new ToolStripMenuItem();
-            btnHidePictureBox = new ToolStripMenuItem();
+            btnPause = new ToolStripMenuItem();
             ExtraToolStripMenuItem = new ToolStripMenuItem();
             btnSearch = new ToolStripMenuItem();
             btnSearchv2 = new ToolStripMenuItem();
@@ -115,7 +115,6 @@
             // 
             // btnPickDeliveryLocationYes
             // 
-            btnPickDeliveryLocationYes.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             btnPickDeliveryLocationYes.BackColor = Color.FromArgb(46, 204, 113);
             btnPickDeliveryLocationYes.FlatAppearance.BorderSize = 0;
             btnPickDeliveryLocationYes.FlatAppearance.MouseDownBackColor = Color.FromArgb(39, 174, 96);
@@ -261,7 +260,6 @@
             // 
             // lblAppTitle
             // 
-            lblAppTitle.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             lblAppTitle.AutoSize = true;
             lblAppTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold, GraphicsUnit.Point);
             lblAppTitle.ForeColor = Color.FromArgb(52, 152, 219);
@@ -275,7 +273,7 @@
             // 
             menuStrip.BackColor = Color.FromArgb(45, 45, 48);
             menuStrip.ForeColor = Color.White;
-            menuStrip.Items.AddRange(new ToolStripItem[] { saveLoadToolStripMenuItem, btnSkip, btnSkipSimilar, btnSkipLayout, btnResetSearch, btnHidePictureBox, ExtraToolStripMenuItem });
+            menuStrip.Items.AddRange(new ToolStripItem[] { saveLoadToolStripMenuItem, btnSkip, btnSkipSimilar, btnSkipLayout, btnResetSearch, btnPause, ExtraToolStripMenuItem });
             menuStrip.Location = new Point(0, 0);
             menuStrip.Name = "menuStrip";
             menuStrip.RenderMode = ToolStripRenderMode.Professional;
@@ -367,13 +365,13 @@
             btnResetSearch.Text = "Reset Search";
             btnResetSearch.Click += btnResetSearch_Click;
             // 
-            // btnHidePictureBox
+            // btnPause
             // 
-            btnHidePictureBox.ForeColor = Color.White;
-            btnHidePictureBox.Name = "btnHidePictureBox";
-            btnHidePictureBox.Size = new Size(106, 20);
-            btnHidePictureBox.Text = "Hide Picture Box";
-            btnHidePictureBox.Click += btnHidePictureBox_Click;
+            btnPause.ForeColor = Color.White;
+            btnPause.Name = "btnPause";
+            btnPause.Size = new Size(50, 20);
+            btnPause.Text = "Pause";
+            btnPause.Click += btnPause_Click;
             // 
             // ExtraToolStripMenuItem
             // 
@@ -436,7 +434,6 @@
             Controls.Add(pictureBox);
             Controls.Add(panelHeader);
             Controls.Add(menuStrip);
-            FormBorderStyle = FormBorderStyle.Sizable;
             MainMenuStrip = menuStrip;
             MinimumSize = new Size(1200, 600);
             Name = "MainForm";
@@ -482,9 +479,9 @@
         private ToolStripMenuItem btnSkipSimilar;
         private ToolStripMenuItem btnSkip;
         private ToolStripMenuItem btnResetSearch;
-        private ToolStripMenuItem btnHidePictureBox;
         private Panel panelFooter;
         private Label btnTopMost;
         private ToolStripMenuItem btnSkipLayout;
+        private ToolStripMenuItem btnPause;
     }
 }

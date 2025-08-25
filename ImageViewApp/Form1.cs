@@ -17,6 +17,98 @@ namespace ImageViewApp
         private string savedFilePath;
         private bool keyInputEnabled = false;
 
+        private bool isPaused = false;
+        private Image savedImage = null;
+        private string[] savedImageFiles = null;
+        private ProcessPriorityClass originalPriorityClass;
+        private bool hotkeysEnabledBeforePause = false;
+
+        private void PauseApplication()
+        {
+            isPaused = true;
+
+            // Save current state
+            savedImage = pictureBox.Image;
+            savedImageFiles = imageFiles;
+
+            // Save whether key input was enabled before pause
+            hotkeysEnabledBeforePause = keyInputEnabled;
+
+            // Clear memory-intensive resources
+            pictureBox.Image = null;
+            pictureBox.ImageLocation = null;
+            imageFiles = new string[0]; // Empty array instead of null to avoid crashes
+
+            // Force garbage collection
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+
+            // Lower process priority
+            try
+            {
+                Process currentProcess = Process.GetCurrentProcess();
+                originalPriorityClass = currentProcess.PriorityClass;
+                currentProcess.PriorityClass = ProcessPriorityClass.Idle;
+            }
+            catch (Exception ex)
+            {
+                ShowToast("⚠️ Could not lower process priority: " + ex.Message, 3000, true);
+            }
+
+            // Disable all functionality buttons
+            DisableAllButtons();
+
+            // Update button text and enable only resume
+            btnPause.Text = "Resume (Paused)";
+            btnPause.Enabled = true;
+
+            // Disable key input
+            DisableKeyInput();
+
+            ShowToast("⏸️ Application paused - Resources minimized", 2500, true);
+        }
+
+        private void ResumeApplication()
+        {
+            isPaused = false;
+
+            // Restore process priority
+            try
+            {
+                Process currentProcess = Process.GetCurrentProcess();
+                currentProcess.PriorityClass = originalPriorityClass;
+            }
+            catch (Exception ex)
+            {
+                ShowToast("⚠️ Could not restore process priority: " + ex.Message, 3000, true);
+            }
+
+            // Restore image files array
+            imageFiles = savedImageFiles ?? new string[0];
+
+            // Restore current image
+            if (savedImage != null)
+            {
+                pictureBox.Image = savedImage;
+                DisplayCurrentImage();
+            }
+
+            // Re-enable buttons based on application state
+            RestoreButtonStates();
+
+            // Restore key input state if it was on before pause
+            if (hotkeysEnabledBeforePause)
+            {
+                EnableKeyInput();
+            }
+
+            // Update button text
+            btnPause.Text = "Pause";
+
+            ShowToast("▶️ Application resumed", 2500, true);
+        }
+
         private void EnableKeyInput()
         {
             keyInputEnabled = true;
@@ -33,46 +125,30 @@ namespace ImageViewApp
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
+            // Always allow pause toggle
+            if (keyData == Keys.NumPad2)
+            {
+                btnPause.PerformClick();
+                return true;
+            }
+
+            // Other hotkeys only if key input is enabled
             if (keyInputEnabled)
             {
                 switch (keyData)
                 {
-                    case Keys.NumPad1:
-                        btnYes.PerformClick();
-                        return true;
-                    case Keys.NumPad2:
-                        btnHidePictureBox.PerformClick();
-                        return true;
-                    case Keys.NumPad3:
-                        btnNo.PerformClick();
-                        return true;
-                    case Keys.NumPad4:
-                        btnSkipSimilar.PerformClick();
-                        return true;
-                    case Keys.NumPad5:
-                        btnSkipLayout.PerformClick();
-                        return true;
-                    case Keys.NumPad6:
-                        btnResetSearch.PerformClick();
-                        return true;
-                    case Keys.NumPad7:
-                        btnLoad.PerformClick();
-                        return true;
-                    case Keys.NumPad8:
-                        btnSearch.PerformClick();
-                        return true;
-                    case Keys.NumPad9:
-                        btnSearchv2.PerformClick();
-                        return true;
-                    default:
-                        return base.ProcessCmdKey(ref msg, keyData);
+                    case Keys.NumPad1: btnYes.PerformClick(); return true;
+                    case Keys.NumPad3: btnNo.PerformClick(); return true;
+                    case Keys.NumPad4: btnSkipSimilar.PerformClick(); return true;
+                    case Keys.NumPad5: btnSkipLayout.PerformClick(); return true;
+                    case Keys.NumPad6: btnResetSearch.PerformClick(); return true;
+                    case Keys.NumPad7: btnLoad.PerformClick(); return true;
+                    case Keys.NumPad8: btnSearch.PerformClick(); return true;
+                    case Keys.NumPad9: btnSearchv2.PerformClick(); return true;
                 }
             }
-            else
-            {
-                // Key input is disabled, handle other keys as needed
-                return base.ProcessCmdKey(ref msg, keyData);
-            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void btnToggleKeyInput_Click(object sender, EventArgs e)
@@ -211,7 +287,6 @@ namespace ImageViewApp
             btnSkipSimilar.Enabled = false;
             btnSkipLayout.Enabled = false;
             btnResetSearch.Enabled = false;
-            btnHidePictureBox.Enabled = false;
             //btnrestartAnimatedImage.Enabled = false;
 
             // Add these lines to disable key input initially
@@ -280,7 +355,6 @@ namespace ImageViewApp
                 btnSkipSimilar.Enabled = true;
                 btnSkipLayout.Enabled = true;
                 btnResetSearch.Enabled = true;
-                btnHidePictureBox.Enabled = true;
                 //btnrestartAnimatedImage.Enabled = true;
             }
         }
@@ -349,7 +423,6 @@ namespace ImageViewApp
             btnSkipSimilar.Enabled = false;
             btnSkipLayout.Enabled = false;
             btnResetSearch.Enabled = false;
-            btnHidePictureBox.Enabled = false;
             //btnrestartAnimatedImage.Enabled = false;
 
             // Deselect the button
@@ -420,7 +493,6 @@ namespace ImageViewApp
                 btnSkipSimilar.Enabled = true;
                 btnSkipLayout.Enabled = true;
                 btnResetSearch.Enabled = true;
-                btnHidePictureBox.Enabled = true;
                 //btnrestartAnimatedImage.Enabled = true;
 
                 LoadImages();
@@ -497,7 +569,6 @@ namespace ImageViewApp
                 btnSkipSimilar.Enabled = true;
                 btnSkipLayout.Enabled = true;
                 btnResetSearch.Enabled = true;
-                btnHidePictureBox.Enabled = true;
                 //btnrestartAnimatedImage.Enabled = true;
 
                 LoadImages();
@@ -732,34 +803,6 @@ namespace ImageViewApp
         //    pictureBox.ImageLocation = imageFiles[currentImageIndex];
         //}
 
-        private void btnHidePictureBox_Click(object sender, EventArgs e)
-        {
-            // Toggle visibility of pictureBox
-            pictureBox.Visible = !pictureBox.Visible;
-
-            // Enable/Disable buttons based on pictureBox visibility
-            bool isVisible = pictureBox.Visible;
-            btnPickFolder.Enabled = isVisible;
-            btnYes.Enabled = isVisible;
-            btnNo.Enabled = isVisible;
-            btnReset.Enabled = isVisible;
-            btnSave.Enabled = isVisible;
-            btnLoad.Enabled = isVisible;
-            btnClearSaveData.Enabled = isVisible;
-            btnSaveAs.Enabled = isVisible;
-            btnLoadAs.Enabled = isVisible;
-            btnSearch.Enabled = isVisible;
-            btnSearchv2.Enabled = isVisible;
-            btnSkip.Enabled = isVisible;
-            btnSkipSimilar.Enabled = isVisible;
-            btnSkipLayout.Enabled = isVisible;
-            btnResetSearch.Enabled = isVisible;
-            //btnrestartAnimatedImage.Enabled = isVisible;
-
-            // Change button text based on visibility
-            btnHidePictureBox.Text = isVisible ? "Hide Image" : "Show Image";
-        }
-
         private void btnSkipSimilar_Click(object sender, EventArgs e)
         {
             if (imageFiles.Length > 0)
@@ -845,6 +888,82 @@ namespace ImageViewApp
             DisplayCurrentImage();
 
             // Deselect the button
+            this.ActiveControl = null;
+        }
+
+        private void DisableAllButtons()
+        {
+            btnPickDeliveryLocationYes.Enabled = false;
+            btnPickDeliveryLocationNo.Enabled = false;
+            btnPickFolder.Enabled = false;
+            btnYes.Enabled = false;
+            btnNo.Enabled = false;
+            btnReset.Enabled = false;
+            btnSave.Enabled = false;
+            btnLoad.Enabled = false;
+            btnClearSaveData.Enabled = false;
+            btnSaveAs.Enabled = false;
+            btnLoadAs.Enabled = false;
+            btnSearch.Enabled = false;
+            btnSearchv2.Enabled = false;
+            btnSkip.Enabled = false;
+            btnSkipSimilar.Enabled = false;
+            btnSkipLayout.Enabled = false;
+            btnResetSearch.Enabled = false;
+            btnToggleKeyInput.Enabled = false;
+            btnTopMost.Enabled = false;
+            btnClose.Enabled = false;
+        }
+
+        private void RestoreButtonStates()
+        {
+            // Always enable these
+            btnReset.Enabled = true;
+            btnSave.Enabled = true;
+            btnLoad.Enabled = true;
+            btnClearSaveData.Enabled = true;
+            btnLoadAs.Enabled = true;
+            btnToggleKeyInput.Enabled = true;
+            btnTopMost.Enabled = true;
+            btnClose.Enabled = true;
+
+            // Enable based on whether delivery locations are set
+            if (string.IsNullOrEmpty(deliveryLocationYes))
+                btnPickDeliveryLocationYes.Enabled = true;
+
+            if (string.IsNullOrEmpty(deliveryLocationNo))
+                btnPickDeliveryLocationNo.Enabled = true;
+
+            // Enable based on whether folders are selected
+            if (!string.IsNullOrEmpty(deliveryLocationYes) && !string.IsNullOrEmpty(deliveryLocationNo) && string.IsNullOrEmpty(imageFolderPath))
+                btnPickFolder.Enabled = true;
+
+            // Enable if image folder is selected
+            if (!string.IsNullOrEmpty(imageFolderPath) && imageFiles != null && imageFiles.Length > 0)
+            {
+                btnSaveAs.Enabled = true;
+                btnYes.Enabled = true;
+                btnNo.Enabled = true;
+                btnSearch.Enabled = true;
+                btnSearchv2.Enabled = true;
+                btnSkip.Enabled = true;
+                btnSkipSimilar.Enabled = true;
+                btnSkipLayout.Enabled = true;
+                btnResetSearch.Enabled = true;
+            }
+        }
+
+        private void btnPause_Click(object sender, EventArgs e)
+        {
+            if (isPaused)
+            {
+                ResumeApplication();
+            }
+            else
+            {
+                PauseApplication();
+            }
+
             this.ActiveControl = null;
         }
     }
